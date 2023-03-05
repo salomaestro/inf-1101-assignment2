@@ -5,7 +5,6 @@
 #include "common.h"
 #include "list.h"
 #include "map.h"
-#include "map_utils.h"
 
 /**
  * @typedef key_value
