@@ -16,5 +16,5 @@ test: wordfreqs data
 	./wordfreqs data/trump_tweet_*.txt
 
 clean:
-	rm -f *~ *.o *.exe wordfreqs test
+	rm -f *~ *.o *.exe wordfreqs
 	rm -rf data
