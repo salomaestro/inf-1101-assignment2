@@ -1,3 +1,4 @@
+// Author: Christian Salomonsen <christian.salomonsen@uit.no>
 #include "map.h"
 #include "common.h"
 #include "list.h"
@@ -9,7 +10,6 @@
 /**
  * @typedef pair
  * @brief Stores a key-value pair.
- *
  */
 typedef struct pair pair_t;
 
@@ -25,6 +25,13 @@ struct map {
     list_t **bucket;
 };
 
+/**
+ * @brief Create a key value pair
+ *
+ * @param key void *
+ * @param value void *
+ * @return pair_t *
+ */
 static pair_t *create_pair(void *key, void *value) {
     pair_t *pair = malloc(sizeof(pair_t));
 
@@ -37,8 +44,20 @@ static pair_t *create_pair(void *key, void *value) {
     return pair;
 }
 
+/**
+ * @brief Free memory allocated for pair data structure.
+ *
+ * @param pair pair_t *
+ */
 static void pair_destroy(pair_t *pair) { free(pair); }
 
+/**
+ * @brief Initialize an array of empty lists using cmpfunc.
+ *
+ * @param n size_t
+ * @param cmpfunc cmpfunc_t
+ * @return list_t **
+ */
 static list_t **init_indices(size_t n, cmpfunc_t cmpfunc) {
     int i;
 
@@ -48,7 +67,7 @@ static list_t **init_indices(size_t n, cmpfunc_t cmpfunc) {
     if (!out)
         fatal_error("init_indices: Calloc failed!\n");
 
-    // Set all lists to empty list.
+    // Initialize all to empty list.
     for (i = 0; i < n; i++) {
         out[i] = list_create(cmpfunc);
     }
@@ -181,37 +200,3 @@ void print_string(void *elem) { printf("%s", (char *)elem); }
 void print_int(void *elem) { printf("%d", *(int *)elem); }
 void print_uint(void *elem) { printf("%lu", *(unsigned long *)elem); }
 void print_float(void *elem) { printf("%f", *(float *)elem); }
-
-void map_print(map_t *map, printfunc_t print_key, printfunc_t print_value) {
-    int i;
-    list_t *inner;
-    list_iter_t *inner_iter;
-    pair_t *pair;
-
-    printf("Map:\n");
-    for (i = 0; i < map->max; i++) {
-
-        // Get inner list.
-        inner = map->bucket[i];
-
-        if (!inner) {
-            printf("\t‰d -: -\n", i);
-        }
-
-        printf("\t%d ", i);
-        inner_iter = list_createiter(inner);
-
-        while (list_hasnext(inner_iter)) {
-            pair = list_next(inner_iter);
-
-            print_key(pair->key);
-            printf(": ");
-            print_value(pair->value);
-
-            if (list_hasnext(inner_iter))
-                printf(" -> ");
-        }
-        list_destroyiter(inner_iter);
-        printf("\n");
-    }
-}
